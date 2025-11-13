@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pyidaungsu', 'Myanmar Text', sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-header h1 {
+            color: #333;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .nav-btn.active {
+            background: #4CAF50;
+        }
+
+        .dashboard-main {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+        }
+
+        .main-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .chat-list {
+            margin-top: 1rem;
+        }
+
+        .chat-item {
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .chat-item:hover {
+            background: #f9f9f9;
+        }
+
+        .following-list {
+            margin-top: 1rem;
+        }
+
+        .seller-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .seller-avatar {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>👤 User Dashboard</h1>
+            <div class="nav-buttons">
+                <button class="nav-btn active" onclick="showSection('feed')">Feed</button>
+                <button class="nav-btn" onclick="showSection('favorites')">Favorites ❤️</button>
+                <button class="nav-btn" onclick="showSection('chats')">Chats 💬</button>
+                <button class="nav-btn" onclick="showSection('following')">Following</button>
+            </div>
+        </header>
+        
+        <main class="dashboard-main">
+            <div class="main-content">
+                <!-- Feed Section -->
+                <div id="feed" class="section active">
+                    <h2>📦 Latest Products</h2>
+                    <div class="product-grid">
+                        <div class="product-card">
+                            <div class="product-image">Product Image</div>
+                            <h3>iPhone 15 Pro</h3>
+                            <p>Price: $999</p>
+                            <p>Seller: Tech Store</p>
+                            <div class="product-actions">
+                                <button class="btn btn-primary" onclick="addToFavorites(1)">❤️ Favorite</button>
+                                <button class="btn btn-secondary" onclick="startChat(1)">💬 Chat</button>
+                            </div>
+                        </div>
+                        <div class="product-card">
+                            <div class="product-image">Product Image</div>
+                            <h3>MacBook Air</h3>
+                            <p>Price: $1299</p>
+                            <p>Seller: Apple Shop</p>
+                            <div class="product-actions">
+                                <button class="btn btn-primary" onclick="addToFavorites(2)">❤️ Favorite</button>
+                                <button class="btn btn-secondary" onclick="startChat(2)">💬 Chat</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Favorites Section -->
+                <div id="favorites" class="section">
+                    <h2>❤️ Your Favorite Products</h2>
+                    <div class="product-grid" id="favoritesGrid">
+                        <!-- Favorites will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Chats Section -->
+                <div id="chats" class="section">
+                    <h2>💬 Chat with Sellers</h2>
+                    <div class="chat-list">
+                        <div class="chat-item" onclick="openChat(1)">
+                            <strong>Tech Store</strong>
+                            <p>Last message: Hello, I'm interested in iPhone...</p>
+                        </div>
+                        <div class="chat-item" onclick="openChat(2)">
+                            <strong>Apple Shop</strong>
+                            <p>Last message: MacBook is available...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Following Section -->
+                <div id="following" class="section">
+                    <h2>👥 Following Sellers</h2>
+                    <div class="following-list">
+                        <div class="seller-item">
+                            <div class="seller-avatar">TS</div>
+                            <div>
+                                <strong>Tech Store</strong>
+                                <p>New products: 5</p>
+                            </div>
+                            <button class="btn btn-danger" onclick="unfollowSeller(1)">Unfollow</button>
+                        </div>
+                        <div class="seller-item">
+                            <div class="seller-avatar">AS</div>
+                            <div>
+                                <strong>Apple Shop</strong>
+                                <p>New products: 3</p>
+                            </div>
+                            <button class="btn btn-danger" onclick="unfollowSeller(2)">Unfollow</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <h3>📢 Admin Ads</h3>
+                <div class="ad-video" onclick="playVideo('ad1')">
+                    <div style="background: #333; color: white; padding: 2rem; text-align: center; border-radius: 5px; cursor: pointer;">
+                        🎥 Click to watch ad video
+                    </div>
+                </div>
+                <div style="margin-top: 1rem; text-align: center;">
+                    <button class="btn btn-primary" onclick="likeAd()">👍 Like</button>
+                    <span id="likeCount">0</span> likes
+                </div>
+                
+                <h3 style="margin-top: 2rem;">🔥 Trending Products</h3>
+                <div class="trending-list">
+                    <p>• iPhone 15 Pro - 150 favorites</p>
+                    <p>• MacBook Air - 120 favorites</p>
+                    <p>• Samsung Galaxy - 95 favorites</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentSection = 'feed';
+        let favorites = [];
+        let likeCount = 0;
+
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section and activate button
+            document.getElementById(section).classList.add('active');
+            event.target.classList.add('active');
+            currentSection = section;
+        }
+
+        function addToFavorites(productId) {
+            if (!favorites.includes(productId)) {
+                favorites.push(productId);
+                alert('Product added to favorites! ❤️');
+                updateFavoritesDisplay();
+            } else {
+                alert('Product already in favorites!');
+            }
+        }
+
+        function updateFavoritesDisplay() {
+            const favoritesGrid = document.getElementById('favoritesGrid');
+            favoritesGrid.innerHTML = '<p>Your favorite products will appear here...</p>';
+        }
+
+        function startChat(sellerId) {
+            showSection('chats');
+            alert(`Starting chat with seller ${sellerId}`);
+        }
+
+        function openChat(chatId) {
+            alert(`Opening chat ${chatId}`);
+        }
+
+        function unfollowSeller(sellerId) {
+            if (confirm('Are you sure you want to unfollow this seller?')) {
+                alert(`Unfollowed seller ${sellerId}`);
+            }
+        }
+
+        function playVideo(adId) {
+            alert(`Playing advertisement video: ${adId}`);
+        }
+
+        function likeAd() {
+            likeCount++;
+            document.getElementById('likeCount').textContent = likeCount;
+            alert('Thanks for liking the ad! 👍');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateFavoritesDisplay();
+        });
+    </script>
+</body>
+</html>
